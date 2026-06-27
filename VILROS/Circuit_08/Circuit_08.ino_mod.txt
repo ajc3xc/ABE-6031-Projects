@@ -1,0 +1,82 @@
+#include <Servo.h>  // servo library
+
+Servo servo1;  // servo control object
+
+// LED pins
+const int led0   = 7;  // LED for 0°
+const int led90  = 6;  // LED for 90°
+const int led180 = 5;  // LED for 180°
+
+void setup()
+{
+  servo1.attach(9);
+
+  // Set LED pins as outputs
+  pinMode(led0, OUTPUT);
+  pinMode(led90, OUTPUT);
+  pinMode(led180, OUTPUT);
+
+  // Start with LEDs off
+  digitalWrite(led0, LOW);
+  digitalWrite(led90, LOW);
+  digitalWrite(led180, LOW);
+}
+
+// Helper function: light only the correct LED
+void indicatePosition(int angle) {
+  if (angle == 0) {
+    digitalWrite(led0, HIGH);
+    digitalWrite(led90, LOW);
+    digitalWrite(led180, LOW);
+  }
+  else if (angle == 90) {
+    digitalWrite(led0, LOW);
+    digitalWrite(led90, HIGH);
+    digitalWrite(led180, LOW);
+  }
+  else if (angle == 180) {
+    digitalWrite(led0, LOW);
+    digitalWrite(led90, LOW);
+    digitalWrite(led180, HIGH);
+  }
+  else {
+    // For in-between positions, turn all LEDs off
+    digitalWrite(led0, LOW);
+    digitalWrite(led90, LOW);
+    digitalWrite(led180, LOW);
+  }
+}
+
+void loop()
+{
+  int position;
+
+  // Jump directly to positions
+  servo1.write(90);
+  indicatePosition(90);
+  delay(1000);
+
+  servo1.write(180);
+  indicatePosition(180);
+  delay(1000);
+
+  servo1.write(0);
+  indicatePosition(0);
+  delay(1000);
+
+  // Sweep up
+  for(position = 0; position < 180; position += 2)
+  {
+    servo1.write(position);
+    indicatePosition(position);
+    delay(20);
+  }
+
+  // Sweep back down
+  for(position = 180; position >= 0; position -= 1)
+  {
+    servo1.write(position);
+    indicatePosition(position);
+    delay(20);
+  }
+}
